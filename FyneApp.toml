@@ -1,0 +1,8 @@
+Website = "https://github.com/qbit/fynado"
+
+[Details]
+  Icon = "icon.png"
+  Name = "fynado"
+  ID = "dev.suah.fynado"
+  Version = "1.0.0"
+  Build = 1
