@@ -23,7 +23,7 @@
         {
           fynado = with pkgs; pkgs.buildGoModule rec {
             pname = "fynado";
-            version = "v0.0.0";
+            version = "v0.1.0";
             src = ./.;
 
             vendorHash = "sha256-orfRl0pOiHMwleZci8riKrksbXGzOUmIk+JmP2sf7PA=";

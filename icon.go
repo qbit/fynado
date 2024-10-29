@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"image"
+	"image/color"
 	"image/png"
 	"math"
 )
@@ -57,7 +58,7 @@ func (m CountIcon) Draw(percentage float64) CountIcon {
 						m.data.Set(x, y, sixes)
 					}
 				} else {
-					m.data.Set(x, y, sixes)
+					m.data.Set(x, y, color.Black)
 				}
 			}
 		}
