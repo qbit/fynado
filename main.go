@@ -79,7 +79,7 @@ func main() {
 		reminderText.TextStyle = fyne.TextStyle{Bold: true}
 		reminderText.Alignment = fyne.TextAlignCenter
 
-		timerText := canvas.NewText("", color.Black)
+		timerText := canvas.NewText("", blue)
 		timerText.TextSize = 50
 		timerText.TextStyle = fyne.TextStyle{Bold: true}
 		timerText.Alignment = fyne.TextAlignCenter
@@ -134,7 +134,7 @@ func main() {
 					rounds++
 
 					if rounds > 3 {
-						roundsText.Text = fmt.Sprintf("%d rounds! Take a break!", rounds)
+						roundsText.Text = fmt.Sprintf("%d rounds! Take an extended break!", rounds)
 					} else {
 						roundsText.Text = fmt.Sprintf("Rounds: %d", rounds)
 					}
