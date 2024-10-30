@@ -42,6 +42,19 @@ func main() {
 	}
 
 	var desk desktop.App
+
+	disable := func() {
+		enabled = false
+		icon.Enabled = enabled
+		desk.SetSystemTrayIcon(icon.Draw(0.0))
+		systray.SetTooltip("Disabled")
+	}
+
+	enable := func() {
+		enabled = true
+		icon.Enabled = enabled
+	}
+
 	if !*makeIcon {
 		a := app.New()
 		driver := fyne.CurrentApp().Driver().(desktop.Driver)
@@ -53,12 +66,10 @@ func main() {
 			desk.SetSystemTrayMenu(
 				fyne.NewMenu("fynado",
 					fyne.NewMenuItem("Enable", func() {
-						enabled = true
-						icon.Enabled = enabled
+						enable()
 					}),
 					fyne.NewMenuItem("Disable", func() {
-						enabled = false
-						icon.Enabled = enabled
+						disable()
 					}),
 				),
 			)
@@ -98,11 +109,9 @@ func main() {
 						container.NewBorder(timerText, nil, nil, nil),
 						container.NewBorder(roundsText, nil, nil, nil),
 						container.NewBorder(nil, widget.NewButton("Extended Break", func() {
-							enabled = false
 							rounds = 0
 							w.Hide()
-							desk.SetSystemTrayIcon(icon.Draw(0.0))
-							systray.SetTooltip("Disabled")
+							disable()
 						}), nil, nil),
 					)),
 			),
