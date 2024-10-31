@@ -117,6 +117,15 @@ func main() {
 			),
 		)
 
+		ctrlQ := &desktop.CustomShortcut{KeyName: fyne.KeyQ, Modifier: fyne.KeyModifierControl}
+		ctrlW := &desktop.CustomShortcut{KeyName: fyne.KeyW, Modifier: fyne.KeyModifierControl}
+		w.Canvas().AddShortcut(ctrlQ, func(shortcut fyne.Shortcut) {
+			a.Quit()
+		})
+		w.Canvas().AddShortcut(ctrlW, func(shortcut fyne.Shortcut) {
+			w.Hide()
+		})
+
 		go func() {
 			duration := workTime
 			w.Hide()
