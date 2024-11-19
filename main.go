@@ -1,11 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"image/color"
 	"log"
+	"net"
 	"os"
+	"os/signal"
+	"path/filepath"
+	"syscall"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -54,6 +59,50 @@ func main() {
 		enabled = true
 		icon.Enabled = enabled
 	}
+
+	ln, err := net.Listen("unix", filepath.Clean(filepath.Join(os.Getenv("HOME"), ".fynado.sock")))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
+
+	go func(ln net.Listener, c chan os.Signal) {
+		s := <-c
+		log.Printf("shutting down: %q", s)
+		ln.Close()
+		os.Exit(1)
+	}(ln, sig)
+
+	go func() {
+		for {
+			c, err := ln.Accept()
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			buf := make([]byte, 1024)
+
+			r, err := c.Read(buf)
+			if err != nil {
+				return
+			}
+
+			data := bytes.TrimSpace(buf[0:r])
+
+			switch string(data) {
+			case "enable":
+				enable()
+			case "disable":
+				disable()
+			default:
+				log.Println("invalid command")
+			}
+
+			c.Close()
+		}
+	}()
 
 	if !*makeIcon {
 		a := app.New()
