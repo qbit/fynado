@@ -60,19 +60,26 @@ func main() {
 		icon.Enabled = enabled
 	}
 
-	ln, err := net.Listen("unix", filepath.Clean(filepath.Join(os.Getenv("HOME"), ".fynado.sock")))
+	sockPath := filepath.Clean(filepath.Join(os.Getenv("HOME"), ".fynado.sock"))
+	ln, err := net.Listen("unix", sockPath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(sig, os.Interrupt, os.Kill, syscall.SIGTERM)
+
+	quitFunc := func() {
+		log.Printf("shutting down")
+		ln.Close()
+		os.Remove(sockPath)
+		os.Exit(0)
+	}
 
 	go func(ln net.Listener, c chan os.Signal) {
 		s := <-c
 		log.Printf("shutting down: %q", s)
-		ln.Close()
-		os.Exit(1)
+		quitFunc()
 	}(ln, sig)
 
 	go func() {
@@ -129,6 +136,10 @@ func main() {
 		a.Lifecycle().SetOnExitedForeground(func() {
 			time.Sleep(time.Second * 3)
 			w.RequestFocus()
+		})
+
+		a.Lifecycle().SetOnStopped(func() {
+			quitFunc()
 		})
 
 		rect := canvas.NewRectangle(color.Black)
