@@ -188,7 +188,7 @@ func main() {
 
 		go func() {
 			duration := workTime
-			w.Hide()
+			fyne.Do(w.Hide)
 
 			log.Println("work time starting")
 
