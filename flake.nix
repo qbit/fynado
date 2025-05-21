@@ -23,10 +23,10 @@
         {
           fynado = with pkgs; pkgs.buildGoModule rec {
             pname = "fynado";
-            version = "v0.1.0";
+            version = "v0.1.2";
             src = ./.;
 
-            vendorHash = "sha256-35R6F8oTfb6wGEcsPPL+pLzuWG7Lm6D8CxIhx8iTns0=";
+            vendorHash = "sha256-J1utJvNdNidZGUUz5URuyjAvf5+SSYkUlLSQqaUlyF0=";
 
             nativeBuildInputs = [ pkg-config copyDesktopItems ];
             buildInputs = [

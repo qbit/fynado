@@ -170,7 +170,7 @@ func main() {
 						container.NewBorder(roundsText, nil, nil, nil),
 						container.NewBorder(nil, widget.NewButton("Extended Break", func() {
 							rounds = 0
-							w.Hide()
+							fyne.Do(w.Hide)
 							disable()
 						}), nil, nil),
 					)),
@@ -183,7 +183,7 @@ func main() {
 			a.Quit()
 		})
 		w.Canvas().AddShortcut(ctrlW, func(shortcut fyne.Shortcut) {
-			w.Hide()
+			fyne.Do(w.Hide)
 		})
 
 		go func() {
@@ -199,14 +199,20 @@ func main() {
 				}
 				duration--
 				timerText.Text = fmt.Sprintf("%02d:%02d", duration/60, duration&60)
-				timerText.Refresh()
+				fyne.Do(timerText.Refresh)
 
-				w.Content().Refresh()
-				systray.SetTooltip(timerText.Text)
+				fyne.Do(func() {
+					w.Content().Refresh()
+				})
+				fyne.Do(func() {
+					systray.SetTooltip(timerText.Text)
+				})
 
 				remainingPct := float64((workTime - duration)) / float64(workTime) * 1
 
-				desk.SetSystemTrayIcon(icon.Draw(remainingPct))
+				fyne.Do(func() {
+					desk.SetSystemTrayIcon(icon.Draw(remainingPct))
+				})
 
 				if duration == 0 {
 					rounds++
@@ -216,7 +222,7 @@ func main() {
 					} else {
 						roundsText.Text = fmt.Sprintf("Rounds: %d", rounds)
 					}
-					roundsText.Refresh()
+					fyne.Do(roundsText.Refresh)
 
 					log.Printf("break %d starting", rounds)
 					showBreak(breakTime, w, timerText)
@@ -226,7 +232,7 @@ func main() {
 			}
 		}()
 
-		a.Run()
+		fyne.Do(a.Run)
 	} else {
 		data := icon.Draw(.73).Content()
 		os.WriteFile("icon.png", data, 0644)
@@ -235,17 +241,16 @@ func main() {
 }
 
 func showBreak(breakTime int, w fyne.Window, t *canvas.Text) {
-
-	w.Show()
+	fyne.Do(w.Show)
 	duration := breakTime
 	for {
 		t.Text = fmt.Sprintf("%02d:%02d", duration/60, duration%60)
-		t.Refresh()
+		fyne.Do(t.Refresh)
 
 		systray.SetTooltip(t.Text)
 
 		if duration == 0 {
-			w.Hide()
+			fyne.Do(w.Hide)
 			return
 		}
 		duration--
